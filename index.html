@@ -1,811 +1,879 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kotek Virtual</title>
-    <link rel="icon" type="image/x-icon" href="resources/img/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="resources/img/favicon.ico" />
 
-    <link rel="stylesheet" href="https://use.typekit.net/gqr4zdt.css">
-    
+    <link rel="stylesheet" href="https://use.typekit.net/gqr4zdt.css" />
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: futura-pt, sans-serif;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: futura-pt, sans-serif;
+      }
 
-        html, body {
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+      }
 
-        .video-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('resources/img/thumbnail.webp');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-color: #FFF;
-            z-index: 1;
-        }
+      .video-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("resources/img/thumbnail.webp");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #fff;
+        z-index: 1;
+      }
 
+      .video-container iframe {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100svw;
+        height: 100svh;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        background: transparent;
+      }
+
+      @media (min-aspect-ratio: 16/9) {
         .video-container iframe {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100svw;
-            height: 100svh;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            background: transparent;
+          height: 56.25svw;
         }
+      }
 
-        
-        @media (min-aspect-ratio: 16/9) {
-            .video-container iframe {
-                height: 56.25svw; 
-            }
+      @media (max-aspect-ratio: 16/9) {
+        .video-container iframe {
+          width: 177.78svh;
         }
+      }
 
-        @media (max-aspect-ratio: 16/9) {
-            .video-container iframe {
-                width: 177.78svh; 
-            }
+      .video-mask {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("resources/img/focus.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 200;
+        padding: 2rem;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 0;
+      }
+
+      .nav-brand a {
+        display: block;
+        transition: opacity 0.3s ease;
+        text-decoration: none;
+      }
+
+      .nav-brand a:hover {
+        opacity: 0.7;
+      }
+
+      .nav-brand-text {
+        color: #fff;
+        text-align: left;
+      }
+
+      .nav-brand-text .brand-name {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 3.5px;
+      }
+
+      .nav-brand-text .brand-tagline {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 1;
+        margin: 4px 0 0 0;
+        font-style: italic;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 1;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: 300;
+        transition: opacity 0.3s ease;
+        position: relative;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background-color: #fff;
+        transition: width 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        opacity: 0.7;
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      .nav-links a:last-child {
+        color: #000;
+        background: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: 500;
+      }
+
+      .nav-links a:last-child::after {
+        display: none;
+      }
+
+      .nav-links a:last-child:hover {
+        opacity: 1;
+        background: rgba(97, 221, 215, 0.9);
+      }
+
+      .texto-intro {
+        position: fixed;
+        bottom: 50px;
+        left: 50px;
+        z-index: 10;
+        color: #fff;
+        font-size: 25px;
+        line-height: 1.2;
+        font-weight: 300;
+        padding: 0;
+        max-width: 600px;
+        display: none; /* Cambiar cuando haya enlace de demo */
+      }
+
+      .texto-intro a {
+        color: #fff;
+        text-decoration: underline;
+        transition: opacity 0.3s ease;
+      }
+
+      .texto-intro a:hover {
+        opacity: 0.7;
+      }
+
+      .modal {
+        position: fixed;
+        top: -100%;
+        left: 0;
+        width: 100%;
+        height: 100dvh;
+        background: rgba(2, 18, 26, 0.9);
+        z-index: 100;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        transition: top 0.5s ease-in-out;
+        overflow-y: auto;
+        pointer-events: none;
+        padding-top: 2rem;
+      }
+
+      .modal.show {
+        top: 0;
+        pointer-events: auto;
+      }
+
+      .modal-content {
+        color: #fff;
+        padding: 4rem 2rem;
+        max-width: 66.6%;
+        width: 100%;
+        position: relative;
+      }
+
+      .modal-close {
+        position: fixed;
+        bottom: 80px;
+        right: 60px;
+        font-size: 1.5rem;
+        color: rgba(2, 18, 26, 0.9);
+        background: #fff;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        width: 50px;
+        height: 50px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        font-weight: 300;
+        z-index: 201;
+        pointer-events: auto;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      .modal.show .modal-close {
+        display: flex;
+      }
+
+      .modal-close:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+      }
+
+      .modal-content h2 {
+        font-size: 48px;
+        font-weight: 300;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+
+      .modal-content hr {
+        border: none;
+        border-top: 2px solid rgb(255, 255, 255);
+        margin: 20px auto 20px;
+        width: 60px;
+      }
+
+      .modal-content p {
+        font-size: 33px;
+        line-height: 1.8;
+        font-weight: 300;
+        text-align: center;
+        max-width: 750px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .modal-content h3 {
+        font-size: 33px;
+        line-height: 1.8;
+        font-weight: 500;
+        text-align: center;
+        margin: 0 auto;
+        max-width: 750px;
+        color: #fff;
+      }
+
+      .contacto-info h3 {
+        font-size: 18px;
+        line-height: 1.8;
+        font-weight: 500;
+        margin-bottom: 0;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .modal-content h3 {
+          font-size: 18px;
+          text-align: center;
         }
-
-
-        .video-mask {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('resources/img/focus.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            z-index: 2;
-            pointer-events: none;
+        .contacto-info h3 {
+          font-size: 18px;
+          text-align: center;
         }
+      }
 
+      .contacto-wrapper {
+        display: flex;
+        gap: 4rem;
+        align-items: flex-start;
+      }
 
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 200;
-            padding: 2rem;
+      .contacto-info {
+        flex: 1;
+        text-align: left;
+      }
+
+      .contacto-form {
+        flex: 1;
+      }
+
+      .contacto-info h3 {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 0;
+      }
+
+      .contacto-info p {
+        font-size: 18px;
+        line-height: 1.8;
+        text-align: left;
+        margin-bottom: 1rem;
+      }
+
+      .contacto-info a {
+        color: #fff;
+        text-decoration: none;
+        transition: text-decoration 0.3s ease;
+      }
+
+      .contacto-info a:hover {
+        text-decoration: underline;
+      }
+
+      .contacto-email-mobile {
+        display: none;
+      }
+
+      /* Mostrar/ocultar versiones de servicios según viewport */
+      #servicios-desktop {
+        display: block;
+      }
+
+      #servicios-mobile {
+        display: none;
+      }
+      #diseno-desktop {
+        display: block;
+      }
+      #diseno-mobile {
+        display: none;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 1rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+        font-size: 18px;
+        font-family: futura-pt, sans-serif;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input::placeholder,
+      .form-group textarea::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-bottom-color: #fff;
+        background-color: rgba(255, 255, 255, 0.15);
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+      }
+
+      @media (max-width: 768px) {
+        #servicios-desktop {
+          display: none;
         }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 0 0;
+        #servicios-mobile {
+          display: block;
         }
-
-        .nav-brand a {
-            display: block;
-            transition: opacity 0.3s ease;
-            text-decoration: none;
+        #diseno-desktop {
+          display: none;
         }
-
-        .nav-brand a:hover {
-            opacity: 0.7;
+        #diseno-mobile {
+          display: block;
         }
+      }
 
-        .nav-brand-text {
-            color: #fff;
-            text-align: left;
-        }
+      .btn-submit {
+        width: 100%;
+        padding: 1rem 2rem;
+        background-color: #fff;
+        color: rgba(2, 18, 26, 0.9);
+        border: none;
+        font-size: 18px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
 
-        .nav-brand-text .brand-name {
-            font-size: 16px;
-            font-weight: 400;
-            line-height: 1;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 3.5px;
-        }
+      .btn-submit:hover {
+        background-color: rgba(97, 221, 215, 0.9);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+      }
 
-        .nav-brand-text .brand-tagline {
-            font-size: 14px;
-            font-weight: 300;
-            line-height: 1;
-            margin: 4px 0 0 0;
-            font-style: italic;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 1;
-        }
+      #my-form-status {
+        font-size: 18px;
+        line-height: 1.8;
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #fff;
+        font-weight: 300;
+      }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: 300;
-            transition: opacity 0.3s ease;
-            position: relative;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background-color: #fff;
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            opacity: 0.7;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-
-        .nav-links a:last-child {
-            color: #000;
-            background: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: 500;
-        }
-
-        .nav-links a:last-child::after {
-            display: none;
-        }
-
-        .nav-links a:last-child:hover {
-            opacity: 1;
-            background: rgba(97, 221, 215, 0.9);
-        }
-
-
-        .texto-intro {
-            position: fixed;
-            bottom: 50px;
-            left: 50px;
-            z-index: 10;
-            color: #fff;
-            font-size: 25px;
-            line-height: 1.2;
-            font-weight: 300;
-            padding: 0;
-            max-width: 600px;
-            display: none; /* Cambiar cuando haya enlace de demo */
-        }
-
-        .texto-intro a {
-            color: #fff;
-            text-decoration: underline;
-            transition: opacity 0.3s ease;
-        }
-
-        .texto-intro a:hover {
-            opacity: 0.7;
-        }
-
-        .modal {
-            position: fixed;
-            top: -100%;
-            left: 0;
-            width: 100%;
-            height: 100dvh;
-            background: rgba(2, 18, 26, 0.90);
-            z-index: 100;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            transition: top 0.5s ease-in-out;
-            overflow-y: auto;
-            pointer-events: none;
-            padding-top: 2rem;
-        }
-
-        .modal.show {
-            top: 0;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            color: #fff;
-            padding: 4rem 2rem;
-            max-width: 66.6%;
-            width: 100%;
-            position: relative;
-        }
-
-        .modal-close {
-            position: fixed;
-            bottom: 80px;
-            right: 60px;
-            font-size: 1.5rem;
-            color: rgba(2, 18, 26, 0.90);
-            background: #fff;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            width: 50px;
-            height: 50px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            font-weight: 300;
-            z-index: 201;
-            pointer-events: auto;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
-
-        .modal.show .modal-close {
-            display: flex;
-        }
-
-        .modal-close:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
-        }
-
+      @media (min-width: 769px) and (max-width: 1500px) {
         .modal-content h2 {
-            font-size: 48px;
-            font-weight: 300;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        .modal-content hr {
-            border: none;
-            border-top: 2px solid rgb(255, 255, 255);
-            margin: 20px auto 20px;
-            width: 60px;
+          font-size: 38px;
         }
 
         .modal-content p {
-            font-size: 33px;
-            line-height: 1.8;
-            font-weight: 300;
-            text-align: center;
-            max-width: 750px;
-            margin-left: auto;
-            margin-right: auto;
+          font-size: 26px;
         }
 
         .modal-content h3 {
-            font-size: 33px;
-            line-height: 1.8;
-            font-weight: 500;
-            text-align: center;
-            margin: 0 auto;
-            max-width: 750px;
-            color: #fff;
+          font-size: 26px;
         }
 
         .contacto-info h3 {
-            font-size: 18px; 
-            line-height: 1.8;
-            font-weight: 500;
-            margin-bottom: 0;
-            text-align: center;
-        }
-
-        @media (max-width: 768px) {
-            .modal-content h3 {
-                font-size: 18px; 
-                text-align: center;
-            }
-            .contacto-info h3 {
-                font-size: 18px;
-                text-align: center;
-            }
-        }
-
-
-        .contacto-wrapper {
-            display: flex;
-            gap: 4rem;
-            align-items: flex-start;
-        }
-
-        .contacto-info {
-            flex: 1;
-            text-align: left;
-        }
-
-        .contacto-form {
-            flex: 1;
-        }
-
-        .contacto-info h3 {
-            font-size: 18px;
-            font-weight: 500;
-            margin-bottom: 0;
+          font-size: 16px;
         }
 
         .contacto-info p {
-            font-size: 18px;
-            line-height: 1.8;
-            text-align: left;
-            margin-bottom: 1rem;
+          font-size: 16px;
         }
 
-        .contacto-info a {
-            color: #fff;
-            text-decoration: none;
-            transition: text-decoration 0.3s ease;
+        .modal-content {
+          padding: 3rem 2rem;
+          max-width: 75%;
         }
 
-        .contacto-info a:hover {
-            text-decoration: underline;
+        header {
+          padding: 1.5rem;
         }
 
-        .contacto-email-mobile {
-            display: none;
+        .nav-links {
+          gap: 1.5rem;
         }
 
-        /* Mostrar/ocultar versiones de servicios según viewport */
-        #servicios-desktop {
-            display: block;
-        }
-
-        #servicios-mobile {
-            display: none;
-        }
-
-
-        .form-group {
-            margin-bottom: 1.5rem;
+        .texto-intro {
+          font-size: 22px;
         }
 
         .form-group input,
         .form-group textarea {
-            width: 100%;
-            padding: 1rem;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-            color: #fff;
-            font-size: 18px;
-            font-family: futura-pt, sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-bottom-color: #fff;
-            background-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        @media (max-width: 768px) {
-            #servicios-desktop {
-                display: none;
-            }
-            #servicios-mobile {
-                display: block;
-            }
+          font-size: 16px;
         }
 
         .btn-submit {
-            width: 100%;
-            padding: 1rem 2rem;
-            background-color: #fff;
-            color: rgba(2, 18, 26, 0.90);
-            border: none;
-            font-size: 18px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-submit:hover {
-            background-color: rgba(97, 221, 215, 0.9);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+          font-size: 16px;
         }
 
         #my-form-status {
-            font-size: 18px;
-            line-height: 1.8;
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #fff;
-            font-weight: 300;
+          font-size: 16px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .modal {
+          padding-top: 2rem;
         }
 
-
-        @media (min-width: 769px) and (max-width: 1140px) {
-
-            .modal-content h2 {
-                font-size: 38px;
-            }
-
-            .modal-content p {
-                font-size: 26px;
-            }
-
-            .modal-content h3 {
-                font-size: 26px;
-            }
-
-            .contacto-info h3 {
-                font-size: 16px;
-            }
-
-            .contacto-info p {
-                font-size: 16px;
-            }
-
-
-            .modal-content {
-                padding: 3rem 2rem;
-                max-width: 75%;
-            }
-
-
-            header {
-                padding: 1.5rem;
-            }
-
-
-            .nav-links {
-                gap: 1.5rem;
-            }
-
-            .texto-intro {
-                font-size: 22px;
-            }
-
-
-            .form-group input,
-            .form-group textarea {
-                font-size: 16px;
-            }
-
-            .btn-submit {
-                font-size: 16px;
-            }
-
-            #my-form-status {
-                font-size: 16px;
-            }
+        .contacto-wrapper {
+          flex-direction: column;
+          gap: 2rem;
         }
 
-
-        @media (max-width: 768px) {
-            .modal {
-                padding-top: 2rem;
-            }
-
-            .contacto-wrapper {
-                flex-direction: column;
-                gap: 2rem;
-            }
-
-            .contacto-info h3,
-            .contacto-info > p {
-                display: none;
-            }
-
-            .contacto-email-mobile {
-                display: flex;
-                align-items: center;
-                gap: 1rem;
-                font-size: 18px;
-                margin-bottom: 2rem;
-            }
-
-            .contacto-email-mobile svg {
-                width: 24px;
-                height: 24px;
-                fill: #fff;
-            }
-
-            header {
-                padding: 2rem 1rem;
-            }
-
-            nav {
-                flex-direction: column;
-                align-items: center;
-                gap: 1.5rem;
-            }
-
-       
-
-            .nav-links {
-                gap: 1.5rem;
-            }
-
-            .nav-links a {
-                font-size: 18px;
-            }
-
-            .texto-intro {
-                font-size: 21px;
-                bottom: 50px;
-                left: 0;
-                right: 0;
-                transform: none;
-                text-align: center;
-                padding: 0 1rem;
-                width: 100%;
-                max-width: 100%;
-            }
-
-            .modal-content {
-                padding: 2rem 30px;
-                overflow-y: auto;
-                max-height: calc(100dvh - 4rem);
-                max-width: 100%;
-            }
-
-            .modal-content h2 {
-                font-size: 2rem;
-            }
-
-            .modal-content p {
-                font-size: 1rem;
-            }
-
-            .modal-close {
-                top: 16px;
-                right: 16px;
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-            }
-
-
-            .modal {
-                z-index: 300;
-            }
-
-            .modal-close {
-                z-index: 301;
-            }
+        .contacto-info h3,
+        .contacto-info > p {
+          display: none;
         }
+
+        .contacto-email-mobile {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          font-size: 18px;
+          margin-bottom: 2rem;
+        }
+
+        .contacto-email-mobile svg {
+          width: 24px;
+          height: 24px;
+          fill: #fff;
+        }
+
+        header {
+          padding: 2rem 1rem;
+        }
+
+        nav {
+          flex-direction: column;
+          align-items: center;
+          gap: 1.5rem;
+        }
+
+        .nav-links {
+          gap: 1.5rem;
+        }
+
+        .nav-links a {
+          font-size: 18px;
+        }
+
+        .texto-intro {
+          font-size: 21px;
+          bottom: 50px;
+          left: 0;
+          right: 0;
+          transform: none;
+          text-align: center;
+          padding: 0 1rem;
+          width: 100%;
+          max-width: 100%;
+        }
+
+        .modal-content {
+          padding: 2rem 30px;
+          overflow-y: auto;
+          max-height: calc(100dvh - 4rem);
+          max-width: 100%;
+        }
+
+        .modal-content h2 {
+          font-size: 2rem;
+        }
+
+        .modal-content p {
+          font-size: 1rem;
+        }
+
+        .modal-close {
+          top: 16px;
+          right: 16px;
+          width: 40px;
+          height: 40px;
+          font-size: 1.2rem;
+        }
+
+        .modal {
+          z-index: 300;
+        }
+
+        .modal-close {
+          z-index: 301;
+        }
+      }
+
+      .site-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 210;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: flex-end;
+        padding: 0.5rem 1rem;
+      }
+
+      .site-footer a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 12px;
+        line-height: 1;
+        font-weight: 300;
+      }
+
+      .site-footer a:hover {
+        text-decoration: underline;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <nav>
-            <div class="nav-brand">
-                <a href="index.html">
-                    <div class="nav-brand-text">
-                        <div class="brand-name">Kotek Virtual</div>
-                        <div class="brand-tagline">Visual Real Estate</div>
-                    </div>
-                </a>
+      <nav>
+        <div class="nav-brand">
+          <a href="index.html">
+            <div class="nav-brand-text">
+              <div class="brand-name">Kotek Virtual</div>
+              <div class="brand-tagline">Visual Real Estate</div>
             </div>
-            <div class="nav-links">
-                <a href="#" class="open-modal" data-modal="nosotros">Nosotros</a>
-                <a href="#" class="open-modal" data-modal="servicios">Servicios</a>
-                <a href="#" class="open-modal" data-modal="contacto">Contacto</a>
-            </div>
-        </nav>
+          </a>
+        </div>
+        <div class="nav-links">
+          <a href="#" class="open-modal" data-modal="nosotros">Nosotros</a>
+          <a href="#" class="open-modal" data-modal="servicios">Servicios</a>
+          <a href="#" class="open-modal" data-modal="contacto">Contacto</a>
+        </div>
+      </nav>
     </header>
     <div class="video-container">
-      
-
-
-        <iframe 
-            src="https://player.vimeo.com/video/1128783456?h=9e43e04c88&background=1&autoplay=1&loop=1&muted=1&controls=0" 
-            frameborder="0" 
-            allow="autoplay; fullscreen" 
-            allowfullscreen>
-        </iframe>
+      <iframe
+        src="https://player.vimeo.com/video/1128783456?h=9e43e04c88&background=1&autoplay=1&loop=1&muted=1&controls=0"
+        frameborder="0"
+        allow="autoplay; fullscreen"
+        allowfullscreen
+      >
+      </iframe>
     </div>
-    
 
     <div class="video-mask"></div>
 
-
-    <p class="texto-intro">
-        Visita nuestra <a href="">demo</a>
-    </p>
-
+    <p class="texto-intro">Visita nuestra <a href="">demo</a></p>
 
     <div class="modal" id="modal-nosotros">
-        <button class="modal-close" data-close="nosotros">✕</button>
-        <div class="modal-content">
-            <h2>Kotek Virtual</h2>
-            <hr>
-            <p>
-                Especializados en visualización y digitalización de proyectos inmobiliarios aún sin contruir.
-                <br>
-                <br>
-Generamos todo el contenido visual necesario para comercializar obra nueva y centralizamos todo ese contenido en un herramineta interactiva, intuitiva y fácil de usar para el equipo comercial.</p>
-        </div>
+      <button class="modal-close" data-close="nosotros">✕</button>
+      <div class="modal-content">
+        <h2>Kotek Virtual</h2>
+        <hr />
+        <p>
+          Especializados en visualización y digitalización de proyectos
+          inmobiliarios.
+          <br />
+          <br />
+          Integrados por un equipo de renderistas, informáticos y diseñadores
+          gráficos, desarrollamos soluciones avanzadas de visualización
+          arquitectónica para elevar el valor percibido de cada promoción y
+          consolidar un posicionamiento de marca premium.
+        </p>
+      </div>
     </div>
-
 
     <div class="modal" id="modal-servicios">
-        <button class="modal-close" data-close="servicios">✕</button>
-        <div class="modal-content">
-            <h2>Servicios</h2>
-            <hr>
-            <h3>Generación de contenido visual</h3>
-            <p id="servicios-desktop"> 
-                Renders Hiperealistas &nbsp; · &nbsp; Tour Virtuales  &nbsp; · &nbsp; 
-                Animaciones <br> Fichas comerciales &nbsp; · &nbsp;
-                Branding &nbsp; · &nbsp; Dossier Comercial <br>
-                <br>
-            </p>
-            <p id="servicios-mobile"> 
-                Renders Hiperealistas &nbsp; · &nbsp; Tour Virtuales <br>
-                Animaciones &nbsp; · &nbsp; Fichas comerciales &nbsp; · &nbsp;
-                Branding <br> Dossier Comercial <br>
-                <br>
-            </p>
-            <h3>Desarrollo de Herramientas Comerciales</h3>
-            <p>
-                Desarrollamos herramientas visuales y sencillas para presentar el proyecto con mayor agilidad.
-            </p>
-        </div>
+      <button class="modal-close" data-close="servicios">✕</button>
+      <div class="modal-content">
+        <h2>Servicios</h2>
+        <hr />
+        <h3>Aplicación Interactiva</h3>
+        <p>
+          Desarrollamos herramientas de venta interactivas diseñadas para que tu
+          equipo comercial presente cada proyecto de forma más profesional y
+          diferenciadora, elevando la experiencia del comprador.
+        </p>
+        <br />
+        <h3>Visualización Arquitectónica</h3>
+        <p id="servicios-desktop">
+          Renders Hiperealistas &nbsp; · &nbsp; Tour Virtuales &nbsp; · &nbsp;
+          Animaciones
+        </p>
+        <p id="servicios-mobile">
+          Renders Hiperealistas &nbsp; · &nbsp; Tour Virtuales <br />
+          Animaciones &nbsp; · &nbsp; Fichas comerciales &nbsp; · &nbsp;
+          Branding <br />
+          Dossier Comercial <br />
+          <br />
+        </p>
+        <br />
+        <h3>Diseño Web & Gráfico</h3>
+        <p id="diseno-desktop">
+          Desarrollo Web &nbsp; · &nbsp; Dossier Comercial &nbsp; · &nbsp;
+          Fichas Comerciales
+        </p>
+        <p id="diseno-mobile">
+          Desarrollo Web &nbsp; · &nbsp; Dossier Comercial <br />
+          Fichas Comerciales
+        </p>
+      </div>
     </div>
-
 
     <div class="modal" id="modal-contacto">
-        <button class="modal-close" data-close="contacto">✕</button>
-        <div class="modal-content">
-            <h2>Contacto</h2>
-            <div class="contacto-wrapper">
-                <div class="contacto-info">
-                    <h3>¿Hablamos?</h3>
-                    <p>Nos encantaría conocer tu proyecto y ayudarte a llevarlo al siguiente nivel.</p>
-                    <p>Rellena el formulario y nos pondremos en contacto contigo lo antes posible.</p>
-                    <p>También puedes escribirnos directamente a <a href="mailto:administracion@kotekvirtual.es"><strong>administracion@kotekvirtual.es</strong></a></p>
-                    <div class="contacto-email-mobile">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                        </svg>
-                        <a href="mailto:administracion@kotekvirtual.es"><strong>administracion@kotekvirtual.es</strong></a>
-                    </div>
-                </div>
-                <div class="contacto-form">
-                    <form
-                    action="https://formspree.io/f/xqayjrpn"
-                    method="POST"
-                    id="my-form"
-                    >
-                        <div class="form-group">
-                            <input type="text" name="nombre" placeholder="Nombre *" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" name="email" placeholder="Email *" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="tel" name="telefono" placeholder="Teléfono">
-                        </div>
-                        <div class="form-group">
-                            <textarea name="mensaje" placeholder="Mensaje *" required></textarea>
-                        </div>
-                        <button type="submit" class="btn-submit">Enviar</button>
-                        <p id="my-form-status"></p>
-                    </form>
-                </div>
+      <button class="modal-close" data-close="contacto">✕</button>
+      <div class="modal-content">
+        <h2>Contacto</h2>
+        <div class="contacto-wrapper">
+          <div class="contacto-info">
+            <h3>¿Hablamos?</h3>
+            <p>
+              Nos encantaría conocer tu proyecto y ayudarte a llevarlo al
+              siguiente nivel.
+            </p>
+            <p>
+              Rellena el formulario y nos pondremos en contacto contigo lo antes
+              posible.
+            </p>
+            <p>
+              También puedes escribirnos directamente a
+              <a href="mailto:administracion@kotekvirtual.es"
+                ><strong>administracion@kotekvirtual.es</strong></a
+              >
+            </p>
+            <div class="contacto-email-mobile">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path
+                  d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
+                />
+              </svg>
+              <a href="mailto:administracion@kotekvirtual.es"
+                ><strong>administracion@kotekvirtual.es</strong></a
+              >
             </div>
+          </div>
+          <div class="contacto-form">
+            <form
+              action="https://formspree.io/f/xqayjrpn"
+              method="POST"
+              id="my-form"
+            >
+              <div class="form-group">
+                <input
+                  type="text"
+                  name="nombre"
+                  placeholder="Nombre *"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email *"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <input type="tel" name="telefono" placeholder="Teléfono" />
+              </div>
+              <div class="form-group">
+                <textarea
+                  name="mensaje"
+                  placeholder="Mensaje *"
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="btn-submit">Enviar</button>
+              <p id="my-form-status"></p>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
 
+    <footer class="site-footer">
+      <a href="privacidad.html">Política de privacidad</a>
+    </footer>
+
     <script>
-        // Abrir/cerrar modales
-        document.querySelectorAll('.open-modal').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const modalId = this.getAttribute('data-modal');
-                const targetModal = document.getElementById('modal-' + modalId);
-                const isAlreadyOpen = targetModal.classList.contains('show');
-                
-                // Cerrar todas las modales
-                document.querySelectorAll('.modal').forEach(modal => {
-                    modal.classList.remove('show');
-                });
-                
-                // Si la modal no estaba abierta, abrirla
-                if (!isAlreadyOpen) {
-                    targetModal.classList.add('show');
-                }
-            });
+      // Abrir/cerrar modales
+      document.querySelectorAll(".open-modal").forEach((link) => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const modalId = this.getAttribute("data-modal");
+          const targetModal = document.getElementById("modal-" + modalId);
+          const isAlreadyOpen = targetModal.classList.contains("show");
+
+          // Cerrar todas las modales
+          document.querySelectorAll(".modal").forEach((modal) => {
+            modal.classList.remove("show");
+          });
+
+          // Si la modal no estaba abierta, abrirla
+          if (!isAlreadyOpen) {
+            targetModal.classList.add("show");
+          }
+        });
+      });
+
+      // Cerrar modal con botón X
+      document.querySelectorAll(".modal-close").forEach((button) => {
+        // Evento click para desktop
+        button.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const modalId = this.getAttribute("data-close");
+          const modal = document.getElementById("modal-" + modalId);
+          modal.classList.remove("show");
         });
 
-        // Cerrar modal con botón X
-        document.querySelectorAll('.modal-close').forEach(button => {
-            // Evento click para desktop
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const modalId = this.getAttribute('data-close');
-                const modal = document.getElementById('modal-' + modalId);
-                modal.classList.remove('show');
-            });
-            
-            // Evento touch para móviles
-            button.addEventListener('touchend', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const modalId = this.getAttribute('data-close');
-                const modal = document.getElementById('modal-' + modalId);
-                modal.classList.remove('show');
-            });
-        });
+        // Evento touch para móviles
+        button.addEventListener("touchend", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
 
-        // Cerrar modal con tecla ESC
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                document.querySelectorAll('.modal.show').forEach(modal => {
-                    modal.classList.remove('show');
-                });
-            }
+          const modalId = this.getAttribute("data-close");
+          const modal = document.getElementById("modal-" + modalId);
+          modal.classList.remove("show");
         });
+      });
 
-        // Manejar envío del formulario
-        var form = document.getElementById("my-form");
-        
-        async function handleSubmit(event) {
-            event.preventDefault();
-            var status = document.getElementById("my-form-status");
-            var data = new FormData(event.target);
-            fetch(event.target.action, {
-                method: form.method,
-                body: data,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    status.innerHTML = "¡Gracias por tu mensaje! Te contactaremos pronto.";
-                    form.reset()
-                } else {
-                    response.json().then(data => {
-                        if (Object.hasOwn(data, 'errors')) {
-                            status.innerHTML = data["errors"].map(error => error["message"]).join(", ")
-                        } else {
-                            status.innerHTML = "Hubo un problema al enviar el formulario. Inténtalo de nuevo."
-                        }
-                    })
-                }
-            }).catch(error => {
-                status.innerHTML = "Hubo un problema al enviar el formulario. Inténtalo de nuevo."
-            });
+      // Cerrar modal con tecla ESC
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          document.querySelectorAll(".modal.show").forEach((modal) => {
+            modal.classList.remove("show");
+          });
         }
-        form.addEventListener("submit", handleSubmit)
+      });
+
+      // Manejar envío del formulario
+      var form = document.getElementById("my-form");
+
+      async function handleSubmit(event) {
+        event.preventDefault();
+        var status = document.getElementById("my-form-status");
+        var data = new FormData(event.target);
+        fetch(event.target.action, {
+          method: form.method,
+          body: data,
+          headers: {
+            Accept: "application/json",
+          },
+        })
+          .then((response) => {
+            if (response.ok) {
+              status.innerHTML =
+                "¡Gracias por tu mensaje! Te contactaremos pronto.";
+              form.reset();
+            } else {
+              response.json().then((data) => {
+                if (Object.hasOwn(data, "errors")) {
+                  status.innerHTML = data["errors"]
+                    .map((error) => error["message"])
+                    .join(", ");
+                } else {
+                  status.innerHTML =
+                    "Hubo un problema al enviar el formulario. Inténtalo de nuevo.";
+                }
+              });
+            }
+          })
+          .catch((error) => {
+            status.innerHTML =
+              "Hubo un problema al enviar el formulario. Inténtalo de nuevo.";
+          });
+      }
+      form.addEventListener("submit", handleSubmit);
     </script>
-</body>
+  </body>
 </html>
