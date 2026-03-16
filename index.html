@@ -326,6 +326,7 @@
 
       @media (min-width: 769px) {
         #modal-nosotros,
+        #modal-para-quien,
         #modal-servicios {
           align-items: center;
           padding-top: 0;
@@ -649,7 +650,7 @@
         }
 
         header {
-          padding: 2rem 1rem;
+          padding: 2rem 0;
         }
 
         nav {
@@ -659,7 +660,7 @@
         }
 
         .nav-links {
-          gap: 1.5rem;
+          gap: 1rem;
         }
 
         .nav-links a {
@@ -757,6 +758,7 @@
           </a>
         </div>
         <div class="nav-links">
+          <a href="#" class="open-modal" data-modal="para-quien">Para quién</a>
           <a href="#" class="open-modal" data-modal="nosotros">Nosotros</a>
           <a href="#" class="open-modal" data-modal="servicios">Servicios</a>
           <a href="#" class="open-modal" data-modal="contacto">Contacto</a>
@@ -791,6 +793,30 @@
           gráficos, desarrollamos soluciones avanzadas de visualización
           arquitectónica para elevar el valor percibido de cada promoción y
           consolidar un posicionamiento de marca premium.
+        </p>
+      </div>
+    </div>
+
+    <div class="modal" id="modal-para-quien">
+      <button class="modal-close" data-close="para-quien">✕</button>
+      <div class="modal-content">
+        <h2>Para quién</h2>
+        <hr />
+        <h3>Estudios de Arquitectura</h3>
+        <p>
+          Integramos un departamento visual y tecnológico bajo tu propia marca.
+        </p>
+        <div class="service-divider" aria-hidden="true"></div>
+        <h3>Promotoras Inmobiliarias</h3>
+        <p>
+          Maximizamos el valor percibido de tus proyectos para elevar el margen
+          de venta.
+        </p>
+        <div class="service-divider" aria-hidden="true"></div>
+        <h3>Estudios de Diseño</h3>
+        <p>
+          Implementamos herramientas para centralizar y potenciar todo tu
+          contenido visual.
         </p>
       </div>
     </div>
@@ -904,6 +930,7 @@
     </div>
 
     <footer class="site-footer">
+      <a href="para-quien.html">Para quién</a>
       <a href="nosotros.html">Nosotros</a>
       <a href="servicios.html">Servicios</a>
       <a href="privacidad.html">Política de privacidad</a>
@@ -914,12 +941,22 @@
       const videoLoader = document.getElementById("video-loader");
       const videoFrame = videoContainer?.querySelector("iframe");
       let videoIsVisible = false;
+      const LOADER_MIN_VISIBLE_MS = 1200;
+      const LOADER_EXTRA_DELAY_MS = 200;
+      const loaderStartTime = Date.now();
 
       function revealVideo() {
         if (videoIsVisible || !videoContainer || !videoLoader) return;
         videoIsVisible = true;
         videoContainer.classList.add("is-ready");
-        videoLoader.classList.add("is-hidden");
+
+        const elapsed = Date.now() - loaderStartTime;
+        const remainingMin = Math.max(LOADER_MIN_VISIBLE_MS - elapsed, 0);
+        const hideDelay = remainingMin + LOADER_EXTRA_DELAY_MS;
+
+        window.setTimeout(() => {
+          videoLoader.classList.add("is-hidden");
+        }, hideDelay);
       }
 
       if (videoFrame) {
